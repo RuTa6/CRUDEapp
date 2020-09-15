@@ -31,7 +31,7 @@ app.post('/stud', function (req, res) {
             })
         }
         res.status(200).json({
-            message: "hi",
+            message: "ok",
             data: result
         })
     })
@@ -79,6 +79,7 @@ app.get('/stud/:id', function (req, res) {
         if (result.length === 0){
             res.status(404).json({
                 message:"no such data",
+                data:result
                 
             })
         } else {
@@ -103,17 +104,24 @@ app.put('/stud',function (req, res){
     var sql3=`UPDATE stud SET name='${body.name}', age=${body.age}, address='${body.address}' WHERE id=${body.id}`;
     con.query(sql3, function(err, result){
         if (err) {
-            console.log("Something went wrong")
+            console.log("Something went wrong.Try again")
             console.log(err)
             res.status(500).json({
                 error: err.message
             })    
         }
+        //if there is no data to be updated
+        if (result.affectedRows === 0){
+            res.status(404).json({
+                message:"no data found to update",
+                
+            })
+        } else {
         res.status(200).json({
             message: "data updated",
             data: result
          })
-
+        }
     })
 })
 
@@ -133,13 +141,22 @@ app.delete('/stud/:id',function (req, res){
                 error: err.message
             })    
         }
+        //if there is no data to be deleted
+        if (result.affectedRows === 0){
+            res.status(404).json({
+                message:"no data found to delete",
+                
+            })
+        } else {
         res.status(200).json({
             message: "data deleted",
             data: result
         })
 
-    })
+        }
 })
+})
+
 
 app.listen(3000)
 
@@ -152,4 +169,5 @@ GET - /stud/{id} => path params
 POST - /stud => body parse
 PUT - /stud =>
 DELETE - /stud/{id}
+
 */
